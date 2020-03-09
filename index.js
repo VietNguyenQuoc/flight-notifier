@@ -17,7 +17,8 @@ app.post("/flight/subscribe", async (req, res) => {
     flightNumber,
     departureAirport,
     arrivalAirport,
-    flightDate
+    flightDate,
+    key: sessionKey
   } = req.body;
 
   const data = JSON.stringify({
@@ -25,7 +26,8 @@ app.post("/flight/subscribe", async (req, res) => {
     flightNumber,
     departureAirport,
     arrivalAirport,
-    flightDate
+    flightDate,
+    sessionKey
   });
 
   const key = JSON.stringify({

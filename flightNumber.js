@@ -1,10 +1,12 @@
 const axios = require("axios");
 const sendMail = require("./services/mailer");
-const { isEmpty, searchDataTemplate } = require("./utils");
+const { isEmpty, searchDataTemplate, formatPrice } = require("./utils");
 
-let responseUser = false;
+const BOOK_FLIGHT_URL = "https://www.traveloka.com/en-vn/prebooking/";
 
-const composeMailOptions = (flightData, receiver) => {
+let responsedUser = false;
+
+const composeMailOptions = (flightData, sessionKey, receiver) => {
   const {
     flightNumber,
     departureAirport,
@@ -19,7 +21,12 @@ const composeMailOptions = (flightData, receiver) => {
   const mailOptions = {
     from: "Z-flight",
     to: receiver,
-    text: `Price has changed from ${previousPrice} ${currency} to ${price} ${currency}`,
+    html: `
+      <p>Price has changed from ${formatPrice(
+        previousPrice
+      )} ${currency} to ${formatPrice(price)} ${currency}</p> 
+      <p>Click <a href=${BOOK_FLIGHT_URL}${sessionKey}>this link</a> to book the flight </p>
+      `,
     subject: `[FLIGHT NOTIFICATION] Flight ${flightNumber} ${departureAirport}-${arrivalAirport} ${
       hour < 10 ? `0${hour}` : hour
     }:${
@@ -108,7 +115,8 @@ const flightsNotify = async ({
   flightNumber,
   departureAirport,
   arrivalAirport,
-  flightDate
+  flightDate,
+  sessionKey
 }) => {
   try {
     const newData = await getFlightData({
@@ -121,7 +129,7 @@ const flightsNotify = async ({
     if (isEmpty(flightData)) {
       flightData = newData;
       flightData.previousPrice = flightData.price;
-      const mailOptions = composeMailOptions(newData, receiver);
+      const mailOptions = composeMailOptions(newData, sessionKey, receiver);
       sendMail(mailOptions);
     } else {
       flightData.price = newData.price;
@@ -133,20 +141,27 @@ const flightsNotify = async ({
       }
     }
 
-    console.log(flightData);
-    if (!responseUser) {
+    if (!responsedUser) {
       process.send("ok");
-      responseUser = true;
+      responsedUser = true;
     }
   } catch (e) {
     process.emit("error");
   }
 };
 
+const refreshSession = async ({ sessionKey }) => {
+  await axios.get(`${BOOK_FLIGHT_URL}${sessionKey}`);
+};
+
 flightsNotify(JSON.parse(process.argv[2]));
 setInterval(() => {
   flightsNotify(JSON.parse(process.argv[2]));
 }, 60000);
+
+setInterval(() => {
+  refreshSession(process.argv[2]);
+}, 85000000);
 
 process.on("message", msg => {
   if (msg === "unsubcribe") {
