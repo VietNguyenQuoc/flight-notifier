@@ -55,8 +55,8 @@ app.post("/flight/subscribe", async (req, res) => {
   });
 });
 
-app.get("/flight/subscribe/:email", async (req, res) => {
-  const { email } = req.params;
+app.get("/flight/subscribe", async (req, res) => {
+  const { email } = req.query;
 
   const data = await promisify(client.hgetall)(`users:${email}`);
   if (!data) return res.status(404).send("Email subscription not found.");
