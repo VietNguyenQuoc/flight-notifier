@@ -1,13 +1,11 @@
 const express = require("express");
 const app = express();
-const redis = require("redis");
+const Redis = require("ioredis");
 const { promisify: prmsf } = require("util");
 const { fork } = require("child_process");
 
 // Initialize redis client
-const client = redis.createClient();
-
-const promisify = func => prmsf(func).bind(client);
+const client = new Redis();
 
 app.use(express.json());
 
@@ -37,7 +35,7 @@ app.post("/flight/subscribe", async (req, res) => {
     flightDate
   });
 
-  if (await promisify(client.hexists)(`users:${email}`, key)) {
+  if (await client.hexists(`users:${email}`, key)) {
     return res.status(400).send("This flight has already been monitoring.");
   }
 
@@ -58,7 +56,7 @@ app.post("/flight/subscribe", async (req, res) => {
 app.get("/flight/subscribe", async (req, res) => {
   const { email } = req.query;
 
-  const data = await promisify(client.hgetall)(`users:${email}`);
+  const data = await client.hgetall(`users:${email}`);
   if (!data) return res.status(404).send("Email subscription not found.");
 
   const flights = Object.keys(data).map(key => ({
@@ -76,7 +74,7 @@ app.post("/flight/unsubscribe", async (req, res) => {
   try {
     const { email, pid: kPid } = req.body;
 
-    const data = await promisify(client.hgetall)(`users:${email}`);
+    const data = await client.hgetall(`users:${email}`);
     if (!data)
       return res.status(404).json({
         success: false,
@@ -93,7 +91,7 @@ app.post("/flight/unsubscribe", async (req, res) => {
         message: "The subscription not found"
       });
 
-    await promisify(client.hdel)(`users:${email}`, field);
+    await client.hdel(`users:${email}`, field);
     process.kill(kPid);
 
     return res.status(200).json({

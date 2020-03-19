@@ -135,7 +135,11 @@ const flightsNotify = async ({
       flightData.price = newData.price;
       flightData.departureTime = newData.departureTime;
       if (flightData.previousPrice !== flightData.price) {
-        const mailOptions = composeMailOptions(flightData, receiver);
+        const mailOptions = composeMailOptions(
+          flightData,
+          sessionKey,
+          receiver
+        );
         sendMail(mailOptions);
         flightData.previousPrice = flightData.price;
       }
@@ -162,9 +166,3 @@ setInterval(() => {
 setInterval(() => {
   refreshSession(process.argv[2]);
 }, 85000000);
-
-process.on("message", msg => {
-  if (msg === "unsubcribe") {
-    process.exit(0);
-  }
-});
