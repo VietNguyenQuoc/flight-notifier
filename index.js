@@ -73,27 +73,17 @@ app.get("/flight/subscribe", async (req, res) => {
 
 app.post("/flight/unsubscribe", async (req, res) => {
   try {
-    const { email, pid: kPid } = req.body;
+    const { email, id } = req.body;
 
-    const data = await client.hgetall(`users:${email}`);
-    if (!data)
+    const pid = await client.hget(`users:${email}`, id);
+    if (!pid)
       return res.status(404).json({
         success: false,
         message: "The subscription not found"
       });
 
-    const field = Object.keys(data)[
-      Object.values(data).findIndex(pid => parseInt(pid) === kPid)
-    ];
-
-    if (!field)
-      return res.status(404).json({
-        success: false,
-        message: "The subscription not found"
-      });
-
-    await client.hdel(`users:${email}`, field);
-    process.kill(kPid);
+    await client.hdel(`users:${email}`, id);
+    process.kill(pid);
 
     return res.status(200).json({
       success: true,
