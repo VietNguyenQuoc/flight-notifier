@@ -60,6 +60,7 @@ app.get("/flight/subscribe", async (req, res) => {
   if (!data) return res.status(404).send("Email subscription not found.");
 
   const flights = Object.keys(data).map(key => ({
+    id: key,
     ...JSON.parse(key),
     pid: parseInt(data[key])
   }));
