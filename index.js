@@ -77,8 +77,7 @@ app.post("/flight/subscribe/detail", async (req, res) => {
     flightNumber,
     departureAirport,
     arrivalAirport,
-    flightDate,
-    key: sessionKey
+    flightDate
   } = req.body;
 
   const flightId = JSON.stringify({
@@ -87,15 +86,11 @@ app.post("/flight/subscribe/detail", async (req, res) => {
     arrivalAirport,
     flightDate
   });
+  console.log(flightId);
 
-  const flight = await client.hget(`users:${email}`, flightId);
+  const isExisted = await client.hget(`users:${email}`, flightId);
 
-  if (!flight)
-    return res
-      .status(404)
-      .json({ success: false, message: "Flight not found" });
-
-  return res.status(200).json({ success: true, data: flight });
+  return res.status(200).json({ isExisted });
 });
 
 app.post("/flight/unsubscribe", async (req, res) => {
