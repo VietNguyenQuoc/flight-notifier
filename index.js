@@ -82,12 +82,10 @@ app.post("/flight/subscribe/detail", async (req, res) => {
   } = req.body;
 
   const flightId = JSON.stringify({
-    email,
     flightNumber,
     departureAirport,
     arrivalAirport,
-    flightDate,
-    sessionKey
+    flightDate
   });
 
   const flight = await client.hget(`users:${email}`, flightId);
