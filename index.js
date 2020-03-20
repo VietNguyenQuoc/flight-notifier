@@ -71,9 +71,26 @@ app.get("/flight/subscribe", async (req, res) => {
   });
 });
 
-app.get("/flight/subscribe/:id", async (req, res) => {
-  const { email } = req.query;
-  const flight = await client.hget(`users:${email}`, req.params.id);
+app.post("/flight/subscribe/detail", async (req, res) => {
+  const {
+    email,
+    flightNumber,
+    departureAirport,
+    arrivalAirport,
+    flightDate,
+    key: sessionKey
+  } = req.body;
+
+  const flightId = JSON.stringify({
+    email,
+    flightNumber,
+    departureAirport,
+    arrivalAirport,
+    flightDate,
+    sessionKey
+  });
+
+  const flight = await client.hget(`users:${email}`, flightId);
 
   if (!flight)
     return res
