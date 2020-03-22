@@ -47,7 +47,8 @@ app.post("/flight/subscribe", async (req, res) => {
       return res.status(200).json({
         success: true,
         message:
-          "Successfully subcribed to the flight price change. You will be notified via email. Thank you"
+          "Successfully subcribed to the flight price change. You will be notified via email. Thank you",
+        data: { id: key, pid: flightNotifyForked.pid }
       });
     }
   });
