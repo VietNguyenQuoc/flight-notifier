@@ -88,9 +88,16 @@ app.post("/flight/subscribe/detail", async (req, res) => {
   });
   console.log(flightId);
 
-  const isExisted = await client.hget(`users:${email}`, flightId);
+  const flight = await client.hget(`users:${email}`, flightId);
 
-  return res.status(200).json({ isExisted });
+  if (!flight)
+    return res
+      .status(404)
+      .json({ success: false, message: "Flight not found." });
+
+  return res
+    .status(200)
+    .json({ success: true, data: { id: flightId, ...flight } });
 });
 
 app.post("/flight/unsubscribe", async (req, res) => {
