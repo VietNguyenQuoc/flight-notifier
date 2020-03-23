@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const Redis = require("ioredis");
-const { promisify: prmsf } = require("util");
+const flightIdWrapper = require("./utils/wrappers/flightIdWrapper");
 const { fork } = require("child_process");
 
 // Initialize redis client
@@ -28,12 +28,7 @@ app.post("/flight/subscribe", async (req, res) => {
     sessionKey
   });
 
-  const key = JSON.stringify({
-    flightNumber,
-    departureAirport,
-    arrivalAirport,
-    flightDate
-  });
+  const key = flightIdWrapper(req.body);
 
   if (await client.hexists(`users:${email}`, key)) {
     return res.status(400).send("This flight has already been monitoring.");
@@ -47,7 +42,7 @@ app.post("/flight/subscribe", async (req, res) => {
       return res.status(200).json({
         success: true,
         message:
-          "Successfully subcribed to the flight price change. You will be notified via email. Thank you",
+          "Successfully subscribed to the flight price change. You will be notified via email. Thank you",
         data: { id: key, pid: flightNotifyForked.pid }
       });
     }
@@ -73,21 +68,9 @@ app.get("/flight/subscribe", async (req, res) => {
 });
 
 app.post("/flight/subscribe/detail", async (req, res) => {
-  const {
-    email,
-    flightNumber,
-    departureAirport,
-    arrivalAirport,
-    flightDate
-  } = req.body;
+  const { email } = req.body;
 
-  const flightId = JSON.stringify({
-    flightNumber,
-    departureAirport,
-    arrivalAirport,
-    flightDate
-  });
-  console.log(flightId);
+  const flightId = flightIdWrapper(req.body);
 
   const flight = await client.hget(`users:${email}`, flightId);
 
