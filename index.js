@@ -23,6 +23,7 @@ require("./services/passport");
 app.use("/auth", require("./routes/auth"));
 app.use('/flight', require('./routes/flight'));
 
-app.listen(1507, () => {
-  console.log(`Flight price notifier is listening...`);
+const PORT = 1507;
+app.listen(PORT, () => {
+  console.log(`Flight price notifier is listening to port ${PORT}...`);
 });
