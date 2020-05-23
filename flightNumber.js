@@ -24,15 +24,15 @@ const composePriceChangedMailOptions = (flightData, sessionKey, receiver) => {
     to: receiver,
     html: `
       <p>Price has changed from ${formatPrice(
-        previousPrice
-      )} ${currency} to ${formatPrice(price)} ${currency}</p> 
+      previousPrice
+    )} ${currency} to ${formatPrice(price)} ${currency}</p> 
       <p>Click <a href=${BOOK_FLIGHT_URL}${sessionKey}>this link</a> to book the flight </p>
       `,
     subject: `[FLIGHT NOTIFICATION] Flight ${flightNumber} ${departureAirport}-${arrivalAirport} ${
       hour < 10 ? `0${hour}` : hour
-    }:${
+      }:${
       minute < 10 ? `0${minute}` : minute
-    } ${day}-${month}-${year} price has changed`
+      } ${day}-${month}-${year} price has changed`
   };
 
   return mailOptions;
@@ -65,9 +65,9 @@ const composeSuccessfulSubscriptionMailOptions = (
       `,
     subject: `[FLIGHT NOTIFICATION] Flight ${flightNumber} ${departureAirport}-${arrivalAirport} ${
       hour < 10 ? `0${hour}` : hour
-    }:${
+      }:${
       minute < 10 ? `0${minute}` : minute
-    } ${day}-${month}-${year} has been successfully monitored`
+      } ${day}-${month}-${year} has been successfully monitored`
   };
 
   return mailOptions;
@@ -128,7 +128,7 @@ const getFlightData = async ({
     return monitoringFlight;
   } catch (ex) {
     console.log(ex);
-    process.send("err");
+    process.send("error");
   }
 };
 
@@ -178,7 +178,7 @@ const flightsNotify = async ({
       responsedUser = true;
     }
   } catch (e) {
-    process.emit("error");
+    process.send(e);
   }
 };
 
@@ -192,5 +192,5 @@ setInterval(() => {
 }, 60000);
 
 setInterval(() => {
-  refreshSession(process.argv[2]);
+  refreshSession(JSON.parse(process.argv[2]));
 }, 85000000);

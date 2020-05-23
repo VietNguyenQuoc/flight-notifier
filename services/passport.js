@@ -18,7 +18,7 @@ passport.use(
       clientID:
         "888664545789-e0dmit4selq1uq666kp9o38re88le4q2.apps.googleusercontent.com",
       clientSecret: "efSVTj73D_Ic9alDw7Yjasbt",
-      callbackURL: "http://localhost:1507/auth/google/callback",
+      callbackURL: `${process.env.SERVER_HOSTNAME}/auth/google/callback`,
       passReqToCallback: true
     },
     async (request, accessToken, refreshToken, profile, done) => {

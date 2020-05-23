@@ -19,10 +19,10 @@ module.exports = () => {
         sort: null
       },
       sourceAirportOrArea: "SGN",
-      searchId: null,
+      // searchId: null,
       usePromoFinder: false,
       useDateFlow: true,
-      visitId: "f0b1e02f-91a0-4918-bb88-2736dca8d616"
+      visitId: "8cc6e19e-9d48-4129-80cb-c31b11af42cf"
     },
     fields: []
   };

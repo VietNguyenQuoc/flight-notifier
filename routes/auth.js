@@ -2,6 +2,7 @@ const router = require("express").Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const qs = require("querystring");
+const generateTokens = require('../services/generateTokens');
 
 router.get(
   "/google",
@@ -23,16 +24,32 @@ router.get(
 );
 
 router.get("/google/success", (req, res) => {
-  const token = jwt.sign(
-    {
-      id: req.user.id,
-      email: req.user.email,
-      googleId: req.user.googleId
-    },
-    "abc"
-  );
-  const query = qs.stringify({ token });
+  const payload = {
+    id: req.user.id,
+    email: req.user.email,
+    googleId: req.user.googleId
+  }
+
+  const { accessToken, refreshToken } = generateTokens(payload);
+
+  const query = qs.stringify({ accessToken, refreshToken });
   return res.redirect(`${req.session.redirect_url}?${query}`);
 });
 
+router.get('/token/refresh', (req, res) => {
+  try {
+    const { refreshToken } = req.query;
+    if (!refreshToken) return res.status(400).send('Please provide the refresh token.');
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY);
+    delete decoded.exp;
+    delete decoded.iat;
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = generateTokens(decoded);
+    console.log(newAccessToken, newRefreshToken);
+    return res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+
+  } catch (e) {
+    console.error(e);
+    res.status(403).send('Access token is malicious.');
+  }
+})
 module.exports = router;

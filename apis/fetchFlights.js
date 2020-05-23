@@ -9,6 +9,11 @@ module.exports = async searchData => {
     {
       headers: {
         "x-domain": "flight",
+        "x-route-prefix": "en-vn",
+        "referer": "https://www.traveloka.com/en-vn/flight/onewaysearch",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
         cookie
       }
     }

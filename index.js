@@ -1,11 +1,13 @@
+require('dotenv').config();
 const express = require("express");
 const session = require("express-session");
 const app = express();
+const morgan = require('morgan');
 
 const passport = require("passport");
 
 // Initialize redis client
-
+app.use(morgan('common'));
 app.use(express.json());
 app.use(
   session({

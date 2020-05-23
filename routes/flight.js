@@ -59,6 +59,11 @@ router.post("/subscribe", auth, async (req, res) => {
           "Successfully subscribed to the flight price change. You will be notified via email. Thank you",
         data: { id: key, pid: flightNotifyForked.pid }
       });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: msg.message
+      })
     }
   });
 });
