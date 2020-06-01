@@ -2,6 +2,8 @@ const axios = require("axios");
 const sendMail = require("./services/mailer");
 const { isEmpty, searchDataTemplate, formatPrice } = require("./utils");
 const fetchFlights = require("./apis/fetchFlights");
+const { Builder, By, Key, until } = require('selenium-webdriver');
+const firefox = require('selenium-webdriver/firefox');
 
 const BOOK_FLIGHT_URL = "https://www.traveloka.com/en-vn/prebooking/";
 
@@ -183,7 +185,15 @@ const flightsNotify = async ({
 };
 
 const refreshSession = async ({ sessionKey }) => {
-  await axios.get(`${BOOK_FLIGHT_URL}${sessionKey}`);
+  const driver = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().headless()).build();
+  try {
+    await driver.get(`${BOOK_FLIGHT_URL}${sessionKey}`);
+  }
+  finally {
+    setTimeout(async () => {
+      await driver.quit();
+    }, 10000)
+  }
 };
 
 flightsNotify(JSON.parse(process.argv[2]));

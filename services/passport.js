@@ -21,7 +21,7 @@ passport.use(
       callbackURL: `${process.env.SERVER_HOSTNAME}/auth/google/callback`,
       passReqToCallback: true
     },
-    async (request, accessToken, refreshToken, profile, done) => {
+    async (_request, _accessToken, _refreshToken, profile, done) => {
       try {
         const [user] = await User.findOrCreate({
           where: { googleId: profile.id },
