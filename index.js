@@ -20,9 +20,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 require("./services/passport");
 
-app.use('/', (_req, res) => {
-  res.send("Do I know you?");
-});
 app.use("/auth", require("./routes/auth"));
 app.use('/flight', require('./routes/flight'));
 
