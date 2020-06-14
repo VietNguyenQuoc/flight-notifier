@@ -2,7 +2,7 @@ const router = require("express").Router();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const qs = require("querystring");
-const generateTokens = require('../services/generateTokens');
+const generateTokens = require('../../infra/services/generateTokens');
 
 router.get(
   "/google",

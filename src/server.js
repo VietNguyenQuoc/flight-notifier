@@ -18,10 +18,10 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-require("./services/passport");
+require("./infra/services/passport");
 
-app.use("/auth", require("./routes/auth"));
-app.use('/flight', require('./routes/flight'));
+app.use("/auth", require("./app/routes/auth"));
+app.use('/flight', require('./app/routes/flight_v2'));
 
 app.listen(1507, () => {
   console.log(`Flight price notifier is listening...`);

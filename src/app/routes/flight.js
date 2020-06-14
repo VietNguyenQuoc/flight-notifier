@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const { fork } = require("child_process");
 const auth = require("../middlewares/auth");
-const flightIdWrapper = require("../utils/wrappers/flightIdWrapper");
-const client = require('../services/redis');
+const flightIdWrapper = require("../../infra/utils/wrappers/flightIdWrapper");
+const client = require('../../infra/db/in-memory/redis');
 
 router.get("/subscribe", auth, async (req, res) => {
   const { email } = req.user;
