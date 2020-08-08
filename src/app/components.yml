@@ -1,0 +1,29 @@
+components:
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: authorization
+      in: header
+  parameters:
+    accessTokenHeader:
+      name: authorization
+      in: header
+      required: true
+  schemas:
+    flightId:
+      type: string
+      example: kdhfi239hdj9r9fe3jjd
+    subscriptionId:
+      type: integer
+    checkSubscription:
+      properties:
+        flightId:
+          $ref: '#/components/schemas/flightId'
+      required:
+        - flightId
+    cancelSubscription:
+      properties:
+        subscriptionId:
+          $ref: '#/components/schemas/subscriptionId'
+      required:
+        - subscriptionId

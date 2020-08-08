@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV=development node src/server.js"
+    "dev": "NODE_ENV=development nodemon src/server.js",
+    "lint": "eslint --ext .js ./src"
   },
   "keywords": [],
   "author": "",
@@ -18,12 +19,37 @@
     "express-session": "^1.17.1",
     "ioredis": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.19",
     "morgan": "^1.10.0",
     "mysql2": "^2.1.0",
+    "node-cron": "^2.0.3",
     "nodemailer": "^6.4.6",
+    "openapi-comment-parser": "^1.0.0",
     "passport": "^0.4.1",
     "passport-google-oauth2": "^0.2.0",
     "selenium-webdriver": "^4.0.0-alpha.7",
-    "sequelize": "^5.21.10"
+    "sequelize": "^5.22.3",
+    "swagger-ui-express": "^4.1.4"
+  },
+  "devDependencies": {
+    "eslint": "^7.6.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
+  },
+  "nodemonConfig": {
+    "ext": "js,json,yml"
   }
 }
