@@ -5,7 +5,6 @@ module.exports = {
     "database": "folite_development",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "operatorsAliases": false,
     "logging": true
   },
   "test": {
@@ -14,7 +13,6 @@ module.exports = {
     "database": process.env.DB_NAME,
     "host": process.env.DB_HOST,
     "dialect": "mysql",
-    "operatorsAliases": false
   },
   "production": {
     "username": process.env.DB_USERNAME,
@@ -28,6 +26,5 @@ module.exports = {
       acquire: 30000,
       idle: 10000,
     },
-    "operatorsAliases": false
   }
 }

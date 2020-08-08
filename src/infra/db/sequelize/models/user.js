@@ -8,5 +8,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
+  User.associate = function (models) {
+    User.belongsToMany(models.Flight, { through: models.Subscription, foreignKey: 'userId' });
+    User.hasMany(models.Subscription, { foreignKey: 'userId' });
+  }
+
   return User;
 };

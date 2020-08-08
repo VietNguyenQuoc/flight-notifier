@@ -3,7 +3,7 @@ const auth = require("../middlewares/auth");
 const flightIdWrapper = require("../../infra/utils/wrappers/flightIdWrapper");
 const client = require('../../infra/db/in-memory/redis');
 const Queue = require('bull');
-const FlightServices = require('../../domains/Flight/Flight.Services');
+const FlightServices = require('../../domains/Subscription/subscription.services');
 
 const queue = new Queue('monitoring_flights');
 
@@ -35,7 +35,7 @@ router.post("/subscribe", auth, async (req, res) => {
     return res.status(400).send("This flight has already been monitoring.");
   }
 
-  queue.process(key, async job => {
+  queue.process(async job => {
     const {
       email,
       flightNumber,
@@ -44,13 +44,13 @@ router.post("/subscribe", auth, async (req, res) => {
       flightDate,
       sessionKey,
       latestPrice } = job.data;
-    console.log(job.data.latestPrice);
+
     const flightData = await FlightServices.getFlightData({ flightNumber, flightDate, arrivalAirport, departureAirport });
     await FlightServices.notifyUserOnFlight({ ...flightData, email, latestPrice, sessionKey });
     return await job.update({ ...job.data, latestPrice: flightData.price });
   });
 
-  const job = await queue.add(key, {
+  const job = await queue.add({
     email,
     flightNumber,
     departureAirport,
